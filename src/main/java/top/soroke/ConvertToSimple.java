@@ -12,7 +12,7 @@ public class ConvertToSimple {
         //获取当前执行目录
         String rootPath = System.getProperty("user.dir");
 
-        convert("C:\\Users\\123\\Desktop\\testuncode");
+        convert("rootPath");
         System.out.println("转换完成");
     }
 
@@ -36,10 +36,11 @@ public class ConvertToSimple {
             }
             bufread.close();
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-
+//            ex.printStackTrace();
+            System.out.println("文件：" + fileName + ",不存在");
         } catch (IOException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
+            System.out.println("文件：" + fileName + ",读取失败请手动检查文件");
         }
         return fileContent;
     }
@@ -59,9 +60,13 @@ public class ConvertToSimple {
                 String[] fileName = file.getName().split("\\.");
 //                System.out.println(fileName[fileName.length-1]);
                 if (!fileName[fileName.length-1].equals("jar") && (fileName[fileName.length-1].equals("ini") || fileName[fileName.length-1].equals("txt")|| fileName[fileName.length-1].equals("lua"))) {
+                    System.out.println("开始处理文件：" + file.getPath());
                     String charset = CpdetectorUtils.getFileEncode(file.getPath());
                     List<String> fileContent = readByBufferedReader(file.getPath(),charset);
-                    writeByBufferedReader(file.getPath(),fileContent,charset);
+                    //如果文件读取失败就不做处理
+                    if (fileContent.size()!=0) {
+                        writeByBufferedReader(file.getPath(),fileContent,charset);
+                    }
                 }
             }
         }
@@ -85,7 +90,7 @@ public class ConvertToSimple {
             FileOutputStream fos = new FileOutputStream(file,false);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, charset));
             for (String content:fileContent) {
-                bw.write(ZhConverterUtil.convertToSimple(content) + "\n");
+                bw.write(ZhConverterUtil.convertToSimple(content) + System.getProperty("line.separator"));
             }
             bw.flush();
             bw.close();
