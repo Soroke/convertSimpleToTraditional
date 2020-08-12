@@ -12,7 +12,7 @@ public class ConvertToSimple {
         //获取当前执行目录
         String rootPath = System.getProperty("user.dir");
 
-        convert("rootPath");
+        convert(rootPath);
         System.out.println("转换完成");
     }
 
